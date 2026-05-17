@@ -36,6 +36,7 @@ class VisitsTable
                 EditAction::make(),
                 DeleteAction::make(),
             ])
+            ->recordUrl(null)
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

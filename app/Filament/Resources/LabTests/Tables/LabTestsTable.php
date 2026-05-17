@@ -30,6 +30,7 @@ class LabTestsTable
                 EditAction::make(),
                 DeleteAction::make(),
             ])
+            ->recordUrl(null)
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
