@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Patients\Tables;
 
-use App\Filament\Support\FullPageModal;
 use App\Filament\Support\PaymentStatus;
 use App\Filament\Tables\HospitalTable;
 use App\Models\Patient;
@@ -63,7 +62,6 @@ class PatientsTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                FullPageModal::edit(),
                 DeleteAction::make(),
                 RestoreAction::make(),
             ])

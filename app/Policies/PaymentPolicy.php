@@ -29,7 +29,7 @@ class PaymentPolicy
 
     public function update(AuthUser $authUser, Payment $payment): bool
     {
-        return $authUser->can('Update:Payment');
+        return false;
     }
 
     public function delete(AuthUser $authUser, Payment $payment): bool

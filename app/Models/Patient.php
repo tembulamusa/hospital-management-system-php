@@ -60,6 +60,11 @@ class Patient extends Model
         return $this->hasMany(Billing::class);
     }
 
+    public function payments(): HasManyThrough
+    {
+        return $this->hasManyThrough(Payment::class, Billing::class)->latest('payments.paid_at');
+    }
+
     public function medicalHistories(): HasMany
     {
         return $this->hasMany(MedicalHistory::class)->latest('recorded_at');

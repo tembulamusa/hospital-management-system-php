@@ -29,7 +29,7 @@ class PatientPolicy
 
     public function update(AuthUser $authUser, Patient $patient): bool
     {
-        return $authUser->can('Update:Patient');
+        return false;
     }
 
     public function delete(AuthUser $authUser, Patient $patient): bool

@@ -132,6 +132,29 @@ class HospitalManagementTest extends TestCase
         $this->assertGreaterThan(0, $patient->nurseTriages->count());
     }
 
+    public function test_patient_payments_relationship_tracks_received_payments(): void
+    {
+        $patient = Patient::query()->where('patient_number', 'PT-1002')->first();
+        $billing = Billing::query()->where('patient_id', $patient->id)->where('status', 'unpaid')->first();
+
+        $this->assertNotNull($billing);
+        $this->assertGreaterThan(0, (float) $billing->balance);
+
+        Payment::create([
+            'billing_id' => $billing->id,
+            'amount' => $billing->balance,
+            'payment_method' => 'cash',
+            'reference' => 'RCPT-PATIENT-001',
+            'paid_at' => now(),
+        ]);
+
+        $patient->unsetRelation('payments');
+        $patient->unsetRelation('billings');
+
+        $this->assertSame(PaymentStatus::PAID, $patient->payment_status);
+        $this->assertTrue($patient->payments()->where('reference', 'RCPT-PATIENT-001')->exists());
+    }
+
     public function test_visit_creation_auto_creates_billing(): void
     {
         $patient = Patient::query()->first();

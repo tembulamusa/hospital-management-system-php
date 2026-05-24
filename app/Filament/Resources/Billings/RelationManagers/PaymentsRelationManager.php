@@ -8,6 +8,7 @@ use App\Filament\Tables\HospitalTable;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
+use Filament\Actions\ViewAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
@@ -55,7 +56,7 @@ class PaymentsRelationManager extends RelationManager
                 FullPageModal::configureCreate(CreateAction::make()),
             ])
             ->recordActions([
-                FullPageModal::edit(),
+                ViewAction::make(),
                 DeleteAction::make(),
                 RestoreAction::make(),
             ])

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Patients;
 
 use App\Filament\Resources\Patients\Pages\CreatePatient;
-use App\Filament\Resources\Patients\Pages\EditPatient;
 use App\Filament\Resources\Patients\Pages\ListPatients;
 use App\Filament\Resources\Patients\Pages\ViewPatient;
 use App\Filament\Resources\Patients\Schemas\PatientForm;
@@ -11,9 +10,11 @@ use App\Filament\Resources\Patients\Schemas\PatientInfolist;
 use App\Filament\Resources\Patients\Tables\PatientsTable;
 use App\Filament\Resources\Patients\RelationManagers\BillingsRelationManager;
 use App\Filament\Resources\Patients\RelationManagers\MedicalHistoriesRelationManager;
+use App\Filament\Resources\Patients\RelationManagers\PatientPaymentsRelationManager;
 use App\Models\Patient;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
@@ -45,10 +46,16 @@ class PatientResource extends Resource
         return PatientsTable::configure($table);
     }
 
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->with([
             'billings',
+            'payments.billing.visit',
             'medicalHistories.recordedBy',
             'nurseTriages.visit',
             'nurseTriages.nurse',
@@ -63,6 +70,7 @@ class PatientResource extends Resource
     {
         return [
             MedicalHistoriesRelationManager::class,
+            PatientPaymentsRelationManager::class,
             BillingsRelationManager::class,
         ];
     }
@@ -73,7 +81,6 @@ class PatientResource extends Resource
             'index' => ListPatients::route('/'),
             'create' => CreatePatient::route('/create'),
             'view' => ViewPatient::route('/{record}'),
-            'edit' => EditPatient::route('/{record}/edit'),
         ];
     }
 }

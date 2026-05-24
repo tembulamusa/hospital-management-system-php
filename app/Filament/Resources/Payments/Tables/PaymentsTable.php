@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Payments\Tables;
 
-use App\Filament\Support\FullPageModal;
 use App\Filament\Support\PaymentStatus;
 use App\Filament\Tables\HospitalTable;
 use Filament\Actions\BulkActionGroup;
@@ -55,7 +54,6 @@ class PaymentsTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                FullPageModal::edit(),
                 DeleteAction::make(),
                 RestoreAction::make(),
             ])

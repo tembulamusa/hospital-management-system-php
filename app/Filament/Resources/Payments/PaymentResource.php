@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Payments;
 
 use App\Filament\Resources\Payments\Pages\CreatePayment;
-use App\Filament\Resources\Payments\Pages\EditPayment;
 use App\Filament\Resources\Payments\Pages\ListPayments;
 use App\Filament\Resources\Payments\Pages\ViewPayment;
 use App\Filament\Resources\Payments\Schemas\PaymentForm;
@@ -12,6 +11,7 @@ use App\Filament\Resources\Payments\Tables\PaymentsTable;
 use App\Models\Payment;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
@@ -26,6 +26,11 @@ class PaymentResource extends Resource
     protected static ?int $navigationSort = 2;
 
     protected static ?string $recordTitleAttribute = 'reference';
+
+    public static function canEdit(Model $record): bool
+    {
+        return false;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -55,7 +60,6 @@ class PaymentResource extends Resource
             'index' => ListPayments::route('/'),
             'create' => CreatePayment::route('/create'),
             'view' => ViewPayment::route('/{record}'),
-            'edit' => EditPayment::route('/{record}/edit'),
         ];
     }
 }
