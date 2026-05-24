@@ -2,7 +2,8 @@
 
 namespace App\Filament\Resources\NurseTriages\Schemas;
 
-use Filament\Forms\Components\Section;
+use App\Support\Filament\StaffSelect;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
@@ -20,6 +21,7 @@ class NurseTriageForm
                             ->searchable()
                             ->preload()
                             ->required(),
+                        StaffSelect::nurse(),
                         TextInput::make('temperature')
                             ->numeric(),
                         TextInput::make('blood_pressure_systolic')

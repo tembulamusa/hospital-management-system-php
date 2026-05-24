@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources\Patients\Schemas;
 
+use App\Filament\Schemas\PatientClinicalInfolistSchema;
+use App\Filament\Schemas\PaymentInformationSchema;
 use Filament\Infolists\Components\ImageEntry;
-use Filament\Schemas\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class PatientInfolist
@@ -29,6 +31,8 @@ class PatientInfolist
                         ImageEntry::make('photo'),
                     ])
                     ->columns(2),
+                ...PatientClinicalInfolistSchema::sections(),
+                ...PaymentInformationSchema::patientSummarySection(),
             ]);
     }
 }

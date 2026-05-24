@@ -9,12 +9,15 @@ use App\Filament\Resources\Patients\Pages\ViewPatient;
 use App\Filament\Resources\Patients\Schemas\PatientForm;
 use App\Filament\Resources\Patients\Schemas\PatientInfolist;
 use App\Filament\Resources\Patients\Tables\PatientsTable;
+use App\Filament\Resources\Patients\RelationManagers\BillingsRelationManager;
+use App\Filament\Resources\Patients\RelationManagers\MedicalHistoriesRelationManager;
 use App\Models\Patient;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class PatientResource extends Resource
@@ -42,10 +45,25 @@ class PatientResource extends Resource
         return PatientsTable::configure($table);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with([
+            'billings',
+            'medicalHistories.recordedBy',
+            'nurseTriages.visit',
+            'nurseTriages.nurse',
+            'doctorNotes.visit',
+            'prescriptions.visit',
+            'prescriptions.doctor',
+            'prescriptions.items.medicine',
+        ]);
+    }
+
     public static function getRelations(): array
     {
         return [
-            //
+            MedicalHistoriesRelationManager::class,
+            BillingsRelationManager::class,
         ];
     }
 

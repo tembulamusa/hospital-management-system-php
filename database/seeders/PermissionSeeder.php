@@ -61,5 +61,69 @@ class PermissionSeeder extends Seeder
         }
 
         Role::findOrCreate('Super Admin')->syncPermissions(Permission::all());
+
+        Role::findOrCreate('Doctor')->syncPermissions([
+            'patients.view',
+            'appointments.view',
+            'appointments.update',
+            'visits.view',
+            'visits.create',
+            'visits.update',
+            'doctor-notes.view',
+            'doctor-notes.create',
+            'doctor-notes.update',
+            'prescriptions.view',
+            'prescriptions.create',
+            'prescriptions.update',
+            'lab.view',
+            'lab.request',
+        ]);
+
+        Role::findOrCreate('Nurse')->syncPermissions([
+            'patients.view',
+            'visits.view',
+            'triage.view',
+            'triage.create',
+            'triage.update',
+        ]);
+
+        Role::findOrCreate('Receptionist')->syncPermissions([
+            'patients.view',
+            'patients.create',
+            'patients.update',
+            'appointments.view',
+            'appointments.create',
+            'appointments.update',
+            'visits.view',
+            'visits.create',
+        ]);
+
+        Role::findOrCreate('Pharmacist')->syncPermissions([
+            'prescriptions.view',
+            'pharmacy.dispense',
+            'medicines.view',
+            'medicines.update',
+        ]);
+
+        Role::findOrCreate('Lab Technician')->syncPermissions([
+            'lab.view',
+            'lab.request',
+            'lab.approve',
+        ]);
+
+        Role::findOrCreate('Accountant')->syncPermissions([
+            'billing.view',
+            'billing.create',
+            'billing.update',
+            'payments.view',
+            'payments.create',
+            'payments.update',
+        ]);
+
+        Role::findOrCreate('Cashier')->syncPermissions([
+            'billing.view',
+            'payments.view',
+            'payments.create',
+        ]);
     }
 }

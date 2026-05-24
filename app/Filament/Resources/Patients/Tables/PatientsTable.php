@@ -2,13 +2,19 @@
 
 namespace App\Filament\Resources\Patients\Tables;
 
+use App\Filament\Support\FullPageModal;
+use App\Filament\Support\PaymentStatus;
+use App\Filament\Tables\HospitalTable;
+use App\Models\Patient;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DeleteAction;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Actions\EditAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class PatientsTable
@@ -27,6 +33,17 @@ class PatientsTable
                 TextColumn::make('last_name')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('payment_status')
+                    ->label('Payment')
+                    ->badge()
+                    ->state(fn (Patient $record): string => $record->payment_status)
+                    ->formatStateUsing(fn (string $state): string => PaymentStatus::label($state))
+                    ->color(fn (string $state): string => PaymentStatus::color($state)),
+                TextColumn::make('outstanding_balance')
+                    ->label('Balance due')
+                    ->money('KES')
+                    ->state(fn (Patient $record): float => $record->outstanding_balance)
+                    ->color(fn (Patient $record): string => $record->outstanding_balance > 0 ? 'danger' : 'success'),
                 TextColumn::make('gender'),
                 TextColumn::make('phone')
                     ->toggleable(),
@@ -36,17 +53,25 @@ class PatientsTable
                     ->toggleable(),
             ])
             ->filters([
-                //
+                ...HospitalTable::archiveFilters(),
+                SelectFilter::make('payment_status')
+                    ->label('Payment status')
+                    ->options(PaymentStatus::labels())
+                    ->query(fn ($query, array $data) => filled($data['value'] ?? null)
+                        ? $query->wherePaymentStatus($data['value'])
+                        : $query),
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                FullPageModal::edit(),
                 DeleteAction::make(),
+                RestoreAction::make(),
             ])
             ->recordUrl(null)
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
+                    RestoreBulkAction::make(),
                 ]),
             ]);
     }

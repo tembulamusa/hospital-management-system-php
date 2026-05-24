@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\NurseTriages\Pages;
 
+use App\Filament\Support\FullPageModal;
 use App\Filament\Resources\NurseTriages\NurseTriageResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
@@ -13,7 +14,7 @@ class ViewNurseTriage extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            FullPageModal::edit(),
         ];
     }
 }

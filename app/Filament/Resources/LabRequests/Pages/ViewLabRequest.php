@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\LabRequests\Pages;
 
+use App\Filament\Support\FullPageModal;
 use App\Filament\Resources\LabRequests\LabRequestResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
@@ -13,7 +14,7 @@ class ViewLabRequest extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            FullPageModal::edit(),
         ];
     }
 }

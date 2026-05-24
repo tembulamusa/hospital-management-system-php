@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SoftDeletesRecord;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,12 +19,27 @@ use Illuminate\Support\Str;
 ])]
 class Visit extends Model
 {
+    use SoftDeletesRecord;
+
     protected static function booted(): void
     {
         static::creating(function (self $visit): void {
             if (blank($visit->visit_number)) {
                 $visit->visit_number = 'VST-' . strtoupper(Str::random(8));
             }
+        });
+
+        static::created(function (self $visit): void {
+            Billing::firstOrCreate(
+                ['visit_id' => $visit->id],
+                [
+                    'patient_id' => $visit->patient_id,
+                    'total_amount' => 0,
+                    'paid_amount' => 0,
+                    'balance' => 0,
+                    'status' => 'unpaid',
+                ],
+            );
         });
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Permissions\Tables;
 
+use App\Filament\Support\FullPageModal;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -27,7 +28,7 @@ class PermissionsTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                FullPageModal::edit(),
                 DeleteAction::make(),
             ])
             ->toolbarActions([

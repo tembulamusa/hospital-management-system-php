@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\Visits\Schemas;
 
-use Filament\Forms\Components\Section;
+use App\Filament\Schemas\PatientPaymentFormSection;
+use App\Support\Filament\StaffSelect;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class VisitForm
@@ -22,22 +24,22 @@ class VisitForm
                             ->dehydrated(false)
                             ->helperText('Auto-generated on save'),
                         Select::make('patient_id')
+                            ->label('Patient')
                             ->relationship('patient', 'patient_number')
-                            ->searchable()
+                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->patient_number} — {$record->first_name} {$record->last_name}")
+                            ->searchable(['patient_number', 'first_name', 'last_name'])
                             ->preload()
-                            ->required(),
-                        Select::make('doctor_id')
-                            ->relationship('doctor', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
+                            ->required()
+                            ->live()
+                            ->helperText(PatientPaymentFormSection::patientSelectPaymentHelper()),
+                        StaffSelect::doctor(),
                         Select::make('status')
                             ->options([
-                                'waiting' => 'waiting',
-                                'consultation' => 'consultation',
-                                'lab' => 'lab',
-                                'pharmacy' => 'pharmacy',
-                                'completed' => 'completed',
+                                'waiting' => 'Waiting',
+                                'consultation' => 'Consultation',
+                                'lab' => 'Lab',
+                                'pharmacy' => 'Pharmacy',
+                                'completed' => 'Completed',
                             ])
                             ->required()
                             ->default('waiting'),

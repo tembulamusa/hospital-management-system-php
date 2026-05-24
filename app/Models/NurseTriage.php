@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\SoftDeletesRecord;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 
 #[Fillable([
     'visit_id',
+    'nurse_id',
     'temperature',
     'blood_pressure_systolic',
     'blood_pressure_diastolic',
@@ -17,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class NurseTriage extends Model
 {
+    use SoftDeletesRecord;
+
     protected function casts(): array
     {
         return [
@@ -29,5 +33,10 @@ class NurseTriage extends Model
     public function visit(): BelongsTo
     {
         return $this->belongsTo(Visit::class);
+    }
+
+    public function nurse(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'nurse_id');
     }
 }

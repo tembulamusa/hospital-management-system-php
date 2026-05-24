@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Billings;
 
+use App\Filament\Resources\Billings\RelationManagers\PaymentsRelationManager;
 use App\Filament\Resources\Billings\Pages\CreateBilling;
 use App\Filament\Resources\Billings\Pages\EditBilling;
 use App\Filament\Resources\Billings\Pages\ListBillings;
@@ -15,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class BillingResource extends Resource
@@ -25,7 +27,7 @@ class BillingResource extends Resource
     protected static UnitEnum|string|null $navigationGroup = 'Billing & Payments';
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $recordTitleAttribute = 'status';
+    protected static ?string $recordTitleAttribute = 'id';
 
     public static function form(Schema $schema): Schema
     {
@@ -42,10 +44,15 @@ class BillingResource extends Resource
         return BillingsTable::configure($table);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['patient', 'visit', 'payments']);
+    }
+
     public static function getRelations(): array
     {
         return [
-            //
+            PaymentsRelationManager::class,
         ];
     }
 

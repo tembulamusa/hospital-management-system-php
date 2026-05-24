@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Roles\Tables;
 
+use App\Filament\Support\FullPageModal;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -27,7 +28,7 @@ class RolesTable
             ])
             ->recordActions([
                 ViewAction::make(),
-                EditAction::make(),
+                FullPageModal::edit(),
                 DeleteAction::make(),
             ])
             ->recordUrl(null)

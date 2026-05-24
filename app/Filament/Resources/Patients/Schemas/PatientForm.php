@@ -2,12 +2,13 @@
 
 namespace App\Filament\Resources\Patients\Schemas;
 
+use App\Filament\Schemas\PatientPaymentFormSection;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class PatientForm
@@ -65,6 +66,7 @@ class PatientForm
                             ->directory('patients'),
                     ])
                     ->columns(2),
+                ...PatientPaymentFormSection::make(),
             ]);
     }
 }

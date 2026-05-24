@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\Prescriptions\Schemas;
 
-use Filament\Forms\Components\Section;
+use App\Support\Filament\StaffSelect;
+use Filament\Forms\Components\Repeater;
+use Filament\Schemas\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class PrescriptionForm
@@ -19,13 +22,36 @@ class PrescriptionForm
                             ->searchable()
                             ->preload()
                             ->required(),
-                        Select::make('doctor_id')
-                            ->relationship('doctor', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
+                        StaffSelect::doctor(),
                     ])
                     ->columns(2),
+                Section::make('Medicines')
+                    ->schema([
+                        Repeater::make('items')
+                            ->relationship()
+                            ->schema([
+                                Select::make('drug_id')
+                                    ->label('Medicine')
+                                    ->relationship('medicine', 'name')
+                                    ->searchable()
+                                    ->preload()
+                                    ->required(),
+                                TextInput::make('dosage')
+                                    ->required()
+                                    ->maxLength(255),
+                                TextInput::make('frequency')
+                                    ->required()
+                                    ->maxLength(255),
+                                TextInput::make('days')
+                                    ->numeric()
+                                    ->required()
+                                    ->minValue(1),
+                            ])
+                            ->columns(2)
+                            ->defaultItems(1)
+                            ->addActionLabel('Add medicine')
+                            ->columnSpanFull(),
+                    ]),
             ]);
     }
 }

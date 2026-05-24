@@ -15,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use UnitEnum;
 
 class AppointmentResource extends Resource
@@ -40,6 +41,11 @@ class AppointmentResource extends Resource
     public static function table(Table $table): Table
     {
         return AppointmentsTable::configure($table);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['patient.billings']);
     }
 
     public static function getRelations(): array

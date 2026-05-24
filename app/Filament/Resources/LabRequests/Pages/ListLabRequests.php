@@ -4,7 +4,7 @@ namespace App\Filament\Resources\LabRequests\Pages;
 
 use App\Filament\Resources\LabRequests\LabRequestResource;
 use Filament\Actions\CreateAction;
-use Filament\Resources\Pages\ListRecords;
+use App\Filament\Resources\Pages\ListRecords;
 
 class ListLabRequests extends ListRecords
 {

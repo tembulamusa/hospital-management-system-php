@@ -8,6 +8,7 @@ use App\Models\Department;
 use App\Models\DoctorNote;
 use App\Models\LabRequest;
 use App\Models\LabTest;
+use App\Models\MedicalHistory;
 use App\Models\Medicine;
 use App\Models\NurseTriage;
 use App\Models\Payment;
@@ -33,6 +34,7 @@ class DemoDataSeeder extends Seeder
         $visits = $this->seedVisits($patients, $staff['doctor']);
 
         $this->seedClinicalWorkflow($visits, $staff['nurse'], $staff['doctor'], $medicines, $labTests);
+        $this->seedMedicalHistories($patients, $staff['doctor']);
         $this->seedBilling($visits, $patients);
     }
 
@@ -64,6 +66,7 @@ class DemoDataSeeder extends Seeder
                 'email' => 'grace.wanjiku@example.com',
                 'employee_number' => 'EMP-DR-001',
                 'specialization' => 'General Medicine',
+                'qualifications' => 'MBChB, MMed (Internal Medicine)',
                 'role' => 'Doctor',
                 'department_id' => $departments['OPD']->id,
                 'gender' => 'Female',
@@ -73,6 +76,7 @@ class DemoDataSeeder extends Seeder
                 'email' => 'jane.akinyi@example.com',
                 'employee_number' => 'EMP-NR-001',
                 'specialization' => 'Triage Nurse',
+                'qualifications' => 'KRCHN, BSc Nursing',
                 'role' => 'Nurse',
                 'department_id' => $departments['NUR']->id,
                 'gender' => 'Female',
@@ -141,6 +145,7 @@ class DemoDataSeeder extends Seeder
                     'password' => 'password',
                     'employee_number' => $definition['employee_number'],
                     'specialization' => $definition['specialization'],
+                    'qualifications' => $definition['qualifications'] ?? null,
                     'department_id' => $definition['department_id'],
                     'gender' => $definition['gender'],
                     'active' => true,
@@ -438,6 +443,65 @@ class DemoDataSeeder extends Seeder
                     'lab_test_id' => $definition['lab_test']->id,
                     'status' => $definition['status'],
                     'result' => $definition['result'],
+                ],
+            );
+        }
+    }
+
+    private function seedMedicalHistories(array $patients, User $doctor): void
+    {
+        $definitions = [
+            [
+                'patient' => $patients['PT-1001'],
+                'recorded_at' => '2026-05-16 08:45:00',
+                'presenting_complaint' => 'Fever, chills, and headache for 3 days.',
+                'history_of_presenting_illness' => 'Symptoms began gradually with evening fever spikes and mild headache.',
+                'past_medical_history' => 'No known chronic conditions.',
+                'allergies' => 'None known',
+                'current_medications' => 'None',
+            ],
+            [
+                'patient' => $patients['PT-1002'],
+                'recorded_at' => '2026-05-16 10:15:00',
+                'presenting_complaint' => 'Cough and fatigue for one week.',
+                'history_of_presenting_illness' => 'Dry cough progressing to productive cough with fatigue.',
+                'past_medical_history' => 'Seasonal allergic rhinitis.',
+                'allergies' => 'Dust mites',
+                'family_history' => 'Father with hypertension.',
+            ],
+            [
+                'patient' => $patients['PT-1003'],
+                'recorded_at' => '2026-05-16 12:45:00',
+                'presenting_complaint' => 'Diabetes follow-up and medication refill.',
+                'past_medical_history' => 'Type 2 diabetes mellitus diagnosed 2018.',
+                'current_medications' => 'Metformin 500mg twice daily',
+                'social_history' => 'Non-smoker, sedentary office work.',
+            ],
+        ];
+
+        foreach ($definitions as $definition) {
+            $patient = $definition['patient'];
+            $recordedAt = Carbon::parse($definition['recorded_at']);
+
+            MedicalHistory::updateOrCreate(
+                [
+                    'patient_id' => $patient->id,
+                    'recorded_at' => $recordedAt,
+                ],
+                [
+                    'patient_id' => $patient->id,
+                    'recorded_by_id' => $doctor->id,
+                    'recorded_at' => $recordedAt,
+                    'presenting_complaint' => $definition['presenting_complaint'] ?? null,
+                    'history_of_presenting_illness' => $definition['history_of_presenting_illness'] ?? null,
+                    'past_medical_history' => $definition['past_medical_history'] ?? null,
+                    'past_surgical_history' => $definition['past_surgical_history'] ?? null,
+                    'allergies' => $definition['allergies'] ?? null,
+                    'current_medications' => $definition['current_medications'] ?? null,
+                    'family_history' => $definition['family_history'] ?? null,
+                    'social_history' => $definition['social_history'] ?? null,
+                    'review_of_systems' => $definition['review_of_systems'] ?? null,
+                    'notes' => $definition['notes'] ?? null,
                 ],
             );
         }
